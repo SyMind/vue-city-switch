@@ -3,7 +3,9 @@
     <div class="search-bar-box">
       <div class="content">
         <form class="form" action="">
-          <input class="input" type="search" placeholder="请输入城市名称和首字母查询">
+          <input class="input" type="search"
+            placeholder="请输入城市名称和首字母查询"
+            @input="inputHandle">
         </form>
       </div>
     </div>
@@ -12,7 +14,12 @@
 
 <script>
 export default {
-  name: 'SearchBar'
+  name: 'SearchBar',
+  methods: {
+    inputHandle (e) {
+      this.$emit('searchEvent', e.target.value)
+    }
+  }
 }
 </script>
 

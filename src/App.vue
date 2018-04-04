@@ -1,15 +1,20 @@
 <template>
   <div id="app" class="city-switch">
     <div class="city-switch-head">
-      <search-bar></search-bar>
+      <search-bar @searchEvent="searchEventHandle"></search-bar>
     </div>
     <div class="city-switch-body">
-      <div class="city-switch-wrapper" @scroll="scrollHandle" ref="wrapper">
-        <current-city-card :currentCity="currentCity"></current-city-card>
-        <common-card title="热门城市"></common-card>
+      <search-suggestion v-show="isSearch"
+        :cityGroup="cityGroup"
+        :value="searchValue"></search-suggestion>
+      <div v-show="!isSearch" class="city-switch-scroll" @scroll="scrollHandle" ref="scroll">
+        <div ref="cards">
+          <current-city-card :currentCity="currentCity"></current-city-card>
+          <common-card title="热门城市"></common-card>
+        </div>
         <city-panel :cityGroup="cityGroup"></city-panel>
       </div>
-      <city-nav :activeInitial="activeInitial"
+      <city-nav v-show="!isSearch" :activeInitial="activeInitial"
         :cityGroup="cityGroup"
         @touchInitialEvent="touchInitialEventHandle"></city-nav>
     </div>
@@ -20,6 +25,7 @@
 import CurrentCityCard from './components/CurrentCityCard'
 import CommonCard from './components/CommonCard'
 import SearchBar from './components/SearchBar'
+import SearchSuggestion from './components/SearchSuggestion'
 import CityNav from './components/CityNav'
 import CityPanel from './components/CityPanel'
 import { getCity } from './util'
@@ -28,6 +34,8 @@ export default {
   name: 'App',
   data () {
     return {
+      isSearch: false,
+      searchValue: '',
       currentCity: {
         name: '大连市',
         loaded: false,
@@ -49,13 +57,7 @@ export default {
     })
   },
   mounted () {
-    let extraHeight = 0
-    let wrapper = this.$refs.wrapper
-    for (let el of wrapper.children) {
-      if (el.className.indexOf('card') > -1) {
-        extraHeight += el.offsetHeight
-      }
-    }
+    let extraHeight = this.$refs.cards.offsetHeight
     let scrollTop = extraHeight
     for (let i = 0; i < this.cityGroup.length; i++) {
       this.cityGroup[i].scrollTop = scrollTop
@@ -66,15 +68,41 @@ export default {
     }
   },
   methods: {
-    touchInitialEventHandle (initial) {
-      for (let i = 0; i < this.cityGroup.length; i++) {
-        if (this.cityGroup[i].initials === initial) {
-          this.$refs.wrapper.scrollTo(0, Math.ceil(this.cityGroup[i].scrollTop))
-        }
+    searchEventHandle (value) {
+      if (value !== '') {
+        this.searchValue = value
+        this.isSearch = true
+      } else {
+        this.searchValue = ''
+        this.isSearch = false
       }
+    },
+    touchInitialEventHandle (initial) {
+      if (initial === '#') {
+        this.$refs.scroll.scrollTo(0, 0)
+        return
+      }
+      let start = 0
+      let end = this.cityGroup.length - 1
+      let mid = parseInt(end / 2)
+      while (start <= end) {
+        if (this.cityGroup[mid].initials > initial) end = mid - 1
+        if (this.cityGroup[mid].initials < initial) start = mid + 1
+        if (this.cityGroup[mid].initials === initial) break
+        mid = parseInt((end + start) / 2)
+      }
+      this.$refs.scroll.scrollTo(0, Math.ceil(this.cityGroup[mid].scrollTop))
+      // for (let i = 0; i < this.cityGroup.length; i++) {
+      //   if (this.cityGroup[i].initials === initial) {
+      //     this.$refs.scroll.scrollTo(0, Math.ceil(this.cityGroup[i].scrollTop))
+      //   }
+      // }
     },
     scrollHandle (e) {
       let scrollTop = Math.ceil(e.target.scrollTop)
+      if (scrollTop < this.cityGroup[0].scrollTop) {
+        this.activeInitial = '#'
+      }
       for (let i = 0; i < this.cityGroup.length; i++) {
         if (scrollTop >= this.cityGroup[i].scrollTop && scrollTop < this.cityGroup[i + 1].scrollTop) {
           this.activeInitial = this.cityGroup[i].initials
@@ -108,6 +136,7 @@ export default {
     CurrentCityCard,
     CommonCard,
     SearchBar,
+    SearchSuggestion,
     CityNav,
     CityPanel
   }
@@ -132,7 +161,7 @@ export default {
     height: 100%;
     padding-top: 65px;
     background: #f2f4f7;
-    .city-switch-wrapper {
+    .city-switch-scroll {
       flex: 1;
       overflow: scroll;
     }

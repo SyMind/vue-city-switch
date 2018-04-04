@@ -1,7 +1,8 @@
 <template>
   <ul class="city-nav">
     <li class="initial">
-      <div class="text" :class="activeInitial === '#' ? 'active' : ''">#</div>
+      <div class="text" :class="activeInitial === '#' ? 'active' : ''"
+        @touchstart="touchstartHandle('#')">#</div>
     </li>
     <li class="initial" v-for="group in cityGroup" :key="group.initials">
       <div class="text"
