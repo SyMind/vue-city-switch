@@ -1,10 +1,10 @@
 <template>
-  <div id="app" class="app">
-    <div class="app-head">
+  <div id="app" class="city-switch">
+    <div class="city-switch-head">
       <search-bar></search-bar>
     </div>
-    <div class="app-body">
-      <div class="app-wrapper">
+    <div class="city-switch-body">
+      <div class="city-switch-wrapper" @scroll="scrollHandle" ref="wrapper">
         <base-card title="当前定位">
           <div>
             <base-button :text="currentCity"></base-button>
@@ -22,13 +22,11 @@
             <base-button :text="currentCity"></base-button>
           </div>
         </base-card>
-        <div>
-          <city-list :cityList="cityList"></city-list>
-        </div>
+        <city-panel :cityGroup="cityGroup"></city-panel>
       </div>
-      <div class="app-nav">
-        <city-nav :cityList="cityList"></city-nav>
-      </div>
+      <city-nav :activeInitial="activeInitial"
+        :cityGroup="cityGroup"
+        @touchInitialEvent="touchInitialEventHandle"></city-nav>
     </div>
   </div>
 </template>
@@ -40,21 +38,55 @@ import BaseButton from './components/base/BaseButton'
 import SearchBar from './components/SearchBar'
 import CurrentCity from './components/CurrentCity'
 import CityNav from './components/CityNav'
-import CityList from './components/CityList'
+import CityPanel from './components/CityPanel'
 
 export default {
   name: 'App',
   data () {
     return {
       currentCity: '北京',
-      cityList: require('./assets/json/cityList.json')
+      cityGroup: [],
+      activeInitial: '#'
     }
   },
   created () {
-    this.cityList = this.handleCityList(this.cityList)
+    this.cityGroup = this.parseCityGroup(require('./assets/json/cityList.json'))
+  },
+  mounted () {
+    let extraHeight = 0
+    let wrapper = this.$refs.wrapper
+    for (let el of wrapper.children) {
+      if (el.className.indexOf('card') > -1) {
+        extraHeight += el.offsetHeight
+      }
+    }
+    this.$store.commit('setExtraHeight', extraHeight)
+    let scrollTop = extraHeight
+    for (let i = 0; i < this.cityGroup.length; i++) {
+      this.cityGroup[i].scrollTop = scrollTop
+      scrollTop += 48
+      for (let j = 0; j < this.cityGroup[i].cityList.length; j++) {
+        scrollTop += 48
+      }
+    }
   },
   methods: {
-    handleCityList (cityList) {
+    touchInitialEventHandle (initial) {
+      for (let i = 0; i < this.cityGroup.length; i++) {
+        if (this.cityGroup[i].initials === initial) {
+          this.$refs.wrapper.scrollTo(0, Math.ceil(this.cityGroup[i].scrollTop))
+        }
+      }
+    },
+    scrollHandle (e) {
+      let scrollTop = Math.ceil(e.target.scrollTop)
+      for (let i = 0; i < this.cityGroup.length; i++) {
+        if (scrollTop >= this.cityGroup[i].scrollTop && scrollTop < this.cityGroup[i + 1].scrollTop) {
+          this.activeInitial = this.cityGroup[i].initials
+        }
+      }
+    },
+    parseCityGroup (cityList) {
       let map = {}
       cityList.forEach((item) => {
         if (item.initials) {
@@ -83,49 +115,33 @@ export default {
     SearchBar,
     CurrentCity,
     CityNav,
-    CityList
+    CityPanel
   }
 }
 </script>
 
 <style lang="scss">
 @import url('./assets/css/reset.css');
-
-.app {
+.city-switch {
   position: relative;
   height: 100%;
-  .app-head {
+  .city-switch-head {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     background: #fff;
   }
-  .app-body {
+  .city-switch-body {
     display: flex;
     box-sizing: border-box;
     height: 100%;
     padding-top: 65px;
     background: #f2f4f7;
-    .app-wrapper {
+    .city-switch-wrapper {
       flex: 1;
       overflow: scroll;
     }
-    .app-nav {
-
-    }
   }
 }
-// .content {
-//   display: flex;
-//   background: rgba(225,227,229,.54);
-//   .wrapper {
-//     flex: 1;
-//     overflow: hidden;
-//     height: 100%;
-//   }
-//   .nav {
-
-//   }
-// }
 </style>

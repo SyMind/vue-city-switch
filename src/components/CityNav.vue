@@ -1,11 +1,14 @@
 <template>
   <ul class="city-nav">
-    <li class="letter">
-      <div class="text">#</div>
+    <li class="initial">
+      <div class="text" :class="activeInitial === '#' ? 'active' : ''">#</div>
     </li>
-    <li class="letter" v-for="city in cityList" :key="city.initials"
-      @touchstart="touchstartHandle(city)">
-      <div class="text">{{ city.initials }}</div>
+    <li class="initial" v-for="group in cityGroup" :key="group.initials">
+      <div class="text"
+        :class="activeInitial === group.initials ? 'active' : ''"
+        @touchstart="touchstartHandle(group.initials)">
+        {{ group.initials }}
+      </div>
     </li>
   </ul>
 </template>
@@ -14,14 +17,18 @@
 export default {
   name: 'CityNaV',
   props: {
-    cityList: {
+    cityGroup: {
       type: Array,
+      required: true
+    },
+    activeInitial: {
+      type: String,
       required: true
     }
   },
   methods: {
-    touchstartHandle (city) {
-      this.$emit('touchLetterEvent', city)
+    touchstartHandle (initial) {
+      this.$emit('touchInitialEvent', initial)
     }
   }
 }
@@ -30,7 +37,7 @@ export default {
 <style lang="scss">
 .city-nav {
   padding-top: 64px;
-  .letter {
+  .initial {
     padding: 3px 0;
     position: relative;
     .text {
@@ -40,6 +47,9 @@ export default {
       line-height: 13px;
       font-size: 12px;
       font-weight: 700;
+      &.active {
+        color: red;
+      }
     }
   }
 }
