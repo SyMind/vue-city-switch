@@ -22,10 +22,13 @@ export default {
 <style lang="scss">
 .card {
   padding: 0 15px;
-  .card-title {
-    padding: 15px 0;
-    font-size: 12px;
-    color: #848c99;
-  }
+}
+.card-title {
+  padding: 15px 0;
+  font-size: 12px;
+  color: #848c99;
+}
+.card-content {
+  font-size: 0;
 }
 </style>

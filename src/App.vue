@@ -5,23 +5,8 @@
     </div>
     <div class="city-switch-body">
       <div class="city-switch-wrapper" @scroll="scrollHandle" ref="wrapper">
-        <base-card title="当前定位">
-          <div>
-            <base-button :text="currentCity"></base-button>
-          </div>
-        </base-card>
-        <base-card title="热门城市">
-          <div>
-            <base-button :text="currentCity"></base-button>
-            <base-button :text="currentCity"></base-button>
-            <base-button :text="currentCity"></base-button>
-            <base-button :text="currentCity"></base-button>
-            <base-button :text="currentCity"></base-button>
-            <base-button :text="currentCity"></base-button>
-            <base-button :text="currentCity"></base-button>
-            <base-button :text="currentCity"></base-button>
-          </div>
-        </base-card>
+        <current-city-card :currentCity="currentCity"></current-city-card>
+        <common-card title="热门城市"></common-card>
         <city-panel :cityGroup="cityGroup"></city-panel>
       </div>
       <city-nav :activeInitial="activeInitial"
@@ -32,25 +17,36 @@
 </template>
 
 <script>
-import BaseCard from './components/base/BaseCard'
-import BaseButton from './components/base/BaseButton'
-
+import CurrentCityCard from './components/CurrentCityCard'
+import CommonCard from './components/CommonCard'
 import SearchBar from './components/SearchBar'
-import CurrentCity from './components/CurrentCity'
 import CityNav from './components/CityNav'
 import CityPanel from './components/CityPanel'
+import { getCity } from './util'
 
 export default {
   name: 'App',
   data () {
     return {
-      currentCity: '北京',
+      currentCity: {
+        name: '大连市',
+        loaded: false,
+        state: 0
+      },
       cityGroup: [],
       activeInitial: '#'
     }
   },
   created () {
     this.cityGroup = this.parseCityGroup(require('./assets/json/cityList.json'))
+    getCity().then((cityName) => {
+      this.currentCity.loaded = true
+      this.currentCity.name = cityName
+      this.currentCity.state = 1
+    }).catch(() => {
+      this.currentCity.loaded = true
+      this.currentCity.state = 0
+    })
   },
   mounted () {
     let extraHeight = 0
@@ -60,7 +56,6 @@ export default {
         extraHeight += el.offsetHeight
       }
     }
-    this.$store.commit('setExtraHeight', extraHeight)
     let scrollTop = extraHeight
     for (let i = 0; i < this.cityGroup.length; i++) {
       this.cityGroup[i].scrollTop = scrollTop
@@ -110,10 +105,9 @@ export default {
     }
   },
   components: {
-    BaseCard,
-    BaseButton,
+    CurrentCityCard,
+    CommonCard,
     SearchBar,
-    CurrentCity,
     CityNav,
     CityPanel
   }
