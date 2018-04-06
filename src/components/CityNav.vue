@@ -6,9 +6,9 @@
     </li>
     <li class="initial" v-for="group in cityGroup" :key="group.initials">
       <div class="text"
-        :class="activeInitial === group.initials ? 'active' : ''"
-        @touchstart="touchstartHandle(group.initials)">
-        {{ group.initials }}
+        :class="activeInitial === group.initial ? 'active' : ''"
+        @touchstart="touchstartHandle(group.initial)">
+        {{ group.initial }}
       </div>
     </li>
   </ul>
@@ -49,7 +49,7 @@ export default {
       font-size: 12px;
       font-weight: 700;
       &.active {
-        color: red;
+        color: #e6454a;
       }
     }
   }

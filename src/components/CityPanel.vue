@@ -1,15 +1,13 @@
 <template>
   <ul class="city-panel">
-    <li class="city-panel-group" v-for="group in cityGroup" :key="group.initials">
-      <div class="initial"
-        :style="{ height: initialHeight }">
-        {{ group.initials }}
+    <li class="city-panel-group" v-for="group in cityGroup" :key="group.initial">
+      <div class="initial">
+        {{ group.initial }}
       </div>
       <ul>
-        <li v-for="city in group.cityList" :key="city.cityId">
-          <div class="name"
-            :style="{ height: cityNameHeight }">
-            {{ city.cityName }}
+        <li v-for="city in group.cities" :key="city.citycode">
+          <div class="name" @click="clickHandle(city)">
+            {{ city.name }}
           </div>
         </li>
       </ul>
@@ -24,14 +22,11 @@ export default {
     cityGroup: {
       type: Array,
       required: true
-    },
-    initialHeight: {
-      type: Number,
-      default: 48
-    },
-    cityNameHeight: {
-      type: Number,
-      default: 48
+    }
+  },
+  methods: {
+    clickHandle (city) {
+      this.$emit('selectCityEvent', city)
     }
   }
 }

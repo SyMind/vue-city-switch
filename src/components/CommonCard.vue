@@ -1,8 +1,8 @@
 <template>
   <base-card :title="title">
-    <div v-for="el in elements" :key="el.cityName" class="common-card-element">
+    <div v-for="el in elements" :key="el.name" class="common-card-element">
       <div class="common-card-text">
-        {{ el.cityName }}
+        {{ el.name }}
       </div>
     </div>
   </base-card>

@@ -10,9 +10,12 @@
       <div v-show="!isSearch" class="city-switch-scroll" @scroll="scrollHandle" ref="scroll">
         <div ref="cards">
           <current-city-card :currentCity="currentCity"></current-city-card>
-          <common-card title="热门城市"></common-card>
+          <common-card title="常用城市"
+            v-if="commonCities.length > 0"
+            :cities="commonCities"></common-card>
         </div>
-        <city-panel :cityGroup="cityGroup"></city-panel>
+        <city-panel :cityGroup="cityGroup"
+          @selectCityEvent="selectCityEventHandle"></city-panel>
       </div>
       <city-nav v-show="!isSearch" :activeInitial="activeInitial"
         :cityGroup="cityGroup"
@@ -41,12 +44,13 @@ export default {
         loaded: false,
         state: 0
       },
+      commonCities: [],
       cityGroup: [],
       activeInitial: '#'
     }
   },
   created () {
-    this.cityGroup = this.parseCityGroup(require('./assets/json/cityList.json'))
+    this.cityGroup = this.parseCityGroup(require('./assets/json/cities.json'))
     getCity().then((cityName) => {
       this.currentCity.loaded = true
       this.currentCity.name = cityName
@@ -62,12 +66,15 @@ export default {
     for (let i = 0; i < this.cityGroup.length; i++) {
       this.cityGroup[i].scrollTop = scrollTop
       scrollTop += 48
-      for (let j = 0; j < this.cityGroup[i].cityList.length; j++) {
+      for (let j = 0; j < this.cityGroup[i].cities.length; j++) {
         scrollTop += 48
       }
     }
   },
   methods: {
+    selectCityEventHandle (city) {
+      this.$emit('selectCityEvent', city)
+    },
     searchEventHandle (value) {
       if (value !== '') {
         this.searchValue = value
@@ -86,17 +93,12 @@ export default {
       let end = this.cityGroup.length - 1
       let mid = parseInt(end / 2)
       while (start <= end) {
-        if (this.cityGroup[mid].initials > initial) end = mid - 1
-        if (this.cityGroup[mid].initials < initial) start = mid + 1
-        if (this.cityGroup[mid].initials === initial) break
+        if (this.cityGroup[mid].initial > initial) end = mid - 1
+        if (this.cityGroup[mid].initial < initial) start = mid + 1
+        if (this.cityGroup[mid].initial === initial) break
         mid = parseInt((end + start) / 2)
       }
       this.$refs.scroll.scrollTo(0, Math.ceil(this.cityGroup[mid].scrollTop))
-      // for (let i = 0; i < this.cityGroup.length; i++) {
-      //   if (this.cityGroup[i].initials === initial) {
-      //     this.$refs.scroll.scrollTo(0, Math.ceil(this.cityGroup[i].scrollTop))
-      //   }
-      // }
     },
     scrollHandle (e) {
       let scrollTop = Math.ceil(e.target.scrollTop)
@@ -105,30 +107,28 @@ export default {
       }
       for (let i = 0; i < this.cityGroup.length; i++) {
         if (scrollTop >= this.cityGroup[i].scrollTop && scrollTop < this.cityGroup[i + 1].scrollTop) {
-          this.activeInitial = this.cityGroup[i].initials
+          this.activeInitial = this.cityGroup[i].initial
         }
       }
     },
-    parseCityGroup (cityList) {
+    parseCityGroup (cities) {
       let map = {}
-      cityList.forEach((item) => {
-        if (item.initials) {
-          item.initials = item.initials.toUpperCase()
-          if (typeof map[item.initials] === 'undefined') {
-            map[item.initials] = []
-          }
-          map[item.initials].push(item)
+      cities.forEach((item) => {
+        item.initial = item.pinyin[0].toUpperCase()
+        if (typeof map[item.initial] === 'undefined') {
+          map[item.initial] = []
         }
+        map[item.initial].push(item)
       })
       let result = []
       for (let key in map) {
         result.push({
-          initials: key,
-          cityList: map[key]
+          initial: key,
+          cities: map[key]
         })
       }
       return result.sort((item1, item2) => {
-        return item1.initials > item2.initials ? 1 : -1
+        return item1.initial > item2.initial ? 1 : -1
       })
     }
   },
