@@ -25,8 +25,8 @@ export default {
 }
 .card-title {
   padding: 15px 0;
-  font-size: 12px;
-  color: #848c99;
+  font-size: 14px;
+  color: #8C8C8C;
 }
 .card-content {
   font-size: 0;

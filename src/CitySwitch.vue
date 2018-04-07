@@ -31,10 +31,12 @@ import SearchBar from './components/SearchBar'
 import SearchSuggestion from './components/SearchSuggestion'
 import CityNav from './components/CityNav'
 import CityPanel from './components/CityPanel'
-import { getCity } from './util'
+import { findCitiesByInitial } from './common'
+import { getCity } from './utils'
+import options from './options'
 
 export default {
-  name: 'App',
+  name: 'CitySwitch',
   data () {
     return {
       isSearch: false,
@@ -89,16 +91,8 @@ export default {
         this.$refs.scroll.scrollTo(0, 0)
         return
       }
-      let start = 0
-      let end = this.cityGroup.length - 1
-      let mid = parseInt(end / 2)
-      while (start <= end) {
-        if (this.cityGroup[mid].initial > initial) end = mid - 1
-        if (this.cityGroup[mid].initial < initial) start = mid + 1
-        if (this.cityGroup[mid].initial === initial) break
-        mid = parseInt((end + start) / 2)
-      }
-      this.$refs.scroll.scrollTo(0, Math.ceil(this.cityGroup[mid].scrollTop))
+      let group = findCitiesByInitial(this.cityGroup, initial)
+      this.$refs.scroll.scrollTo(0, Math.ceil(group.scrollTop))
     },
     scrollHandle (e) {
       let scrollTop = Math.ceil(e.target.scrollTop)
@@ -160,7 +154,7 @@ export default {
     box-sizing: border-box;
     height: 100%;
     padding-top: 65px;
-    background: #f2f4f7;
+    background: #f2f2f2;
     .city-switch-scroll {
       flex: 1;
       overflow: scroll;

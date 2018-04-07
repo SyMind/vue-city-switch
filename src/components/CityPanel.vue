@@ -38,11 +38,26 @@ export default {
   .initial {
     height: 48px;
     line-height: 48px;
+    font-size: 14px;
+    color: #8C8C8C;
   }
   .name {
     position: relative;
     height: 48px;
     line-height: 48px;
+    font-size: 15px;
+    color: #5C5C5C;
+    &:after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 1px;
+      width: 100%;
+      transform: scaleY(.5);
+      transform-origin: 0 1px;
+      background: #aaa;
+    }
   }
 }
 </style>

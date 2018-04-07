@@ -38,3 +38,8 @@ export function getCity (success, fail) {
     throw new Error('request baidu api failure.')
   })
 }
+
+export function isChinese (word) {
+  let regex = /^[\u4e00-\u9fa5]+$/
+  return regex.test(word)
+}

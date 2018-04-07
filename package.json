@@ -2,13 +2,14 @@
   "name": "location",
   "version": "1.0.0",
   "description": "A Vue.js project",
-  "author": "",
-  "private": true,
+  "author": "SyMind <dacongsama@live.com>",
+  "main": "dist/vue-city-switch.js",
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
     "lint": "eslint --ext .js,.vue src",
-    "build": "node build/build.js",
+    "build:dev": "node build/build.js dev",
+    "build:lib": "node build/build.js lib",
     "tool": "node tool"
   },
   "dependencies": {

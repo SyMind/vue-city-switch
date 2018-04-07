@@ -1,7 +1,7 @@
 <template>
   <div class="search-bar">
     <div class="search-bar-box">
-      <div class="content">
+      <div class="content" :style="searchBarIcon ? 'background-image:url(' + searchBarIcon + ')' : ''">
         <form class="form" action="">
           <input class="input" type="search"
             placeholder="请输入城市名称和首字母查询"
@@ -13,8 +13,16 @@
 </template>
 
 <script>
+import options from '../options'
+
 export default {
   name: 'SearchBar',
+  data () {
+    console.log(options.get('searchBarIcon'))
+    return  {
+      searchBarIcon: options.get('searchBarIcon')
+    }
+  },
   methods: {
     inputHandle (e) {
       this.$emit('searchEvent', e.target.value)
@@ -29,12 +37,11 @@ export default {
     .search-bar-box {
       height: 35px;
       border-radius: 25px;
-      color: #848c99;
-      background: rgba(225,227,229,.54);
+      color: #8C8C8C;
+      background: #f2f2f2;
       .content {
         height: 100%;
         padding: 0 24px 0 29px;
-        background-image: url(../assets/icon/search.png);
         background-size: 16px 16px;
         background-repeat: no-repeat;
         background-position: 10px 10px;
@@ -53,7 +60,7 @@ export default {
             line-height: 35px;
             font-family: PingFangSC-Regular;
             font-size: 16px;
-            color: #292D33;
+            color: #8C8C8C;
           }
         }
       }

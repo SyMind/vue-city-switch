@@ -48,6 +48,7 @@ export default {
       line-height: 13px;
       font-size: 12px;
       font-weight: 700;
+      color: #8C8C8C;
       &.active {
         color: #e6454a;
       }

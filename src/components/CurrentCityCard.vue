@@ -46,6 +46,7 @@ export default {
     line-height: 40px;
     font-size: 15px;
     text-align: center;
+    color: #5C5C5C;
     background-color: #fff;
   }
 }
