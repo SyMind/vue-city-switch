@@ -26,7 +26,7 @@ export default {
   },
   methods: {
     clickHandle (city) {
-      this.$emit('selectCityEvent', city)
+      this.$emit('selectCityEvent', Object.assign({}, city))
     }
   }
 }

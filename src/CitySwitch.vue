@@ -9,8 +9,10 @@
         :value="searchValue"></search-suggestion>
       <div v-show="!isSearch" class="city-switch-scroll" @scroll="scrollHandle" ref="scroll">
         <div ref="cards">
-          <current-city-card :currentCity="currentCity"></current-city-card>
+          <current-city-card :currentCity="currentCity"
+            @selectCityEvent="selectCityEventHandle"></current-city-card>
           <common-card title="常用城市"
+            @selectCityEvent="selectCityEventHandle"
             v-if="commonCities.length > 0"
             :cities="commonCities"></common-card>
         </div>
@@ -31,7 +33,7 @@ import SearchBar from './components/SearchBar'
 import SearchSuggestion from './components/SearchSuggestion'
 import CityNav from './components/CityNav'
 import CityPanel from './components/CityPanel'
-import { findCitiesByInitial } from './common'
+import { findCitiesByInitial, getCommonCities, addCommonCities } from './common'
 import { getCity } from './utils'
 import options from './options'
 
@@ -61,6 +63,8 @@ export default {
       this.currentCity.loaded = true
       this.currentCity.state = 0
     })
+
+    this.commonCities = getCommonCities()
   },
   mounted () {
     let extraHeight = this.$refs.cards.offsetHeight
@@ -75,6 +79,9 @@ export default {
   },
   methods: {
     selectCityEventHandle (city) {
+      // this.commonCities.push(city)
+      addCommonCities(city)
+
       this.$emit('selectCityEvent', city)
     },
     searchEventHandle (value) {

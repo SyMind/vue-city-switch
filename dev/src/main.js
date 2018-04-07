@@ -2,6 +2,8 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import VueResource from 'vue-resource'
+
+import router from './router'
 import App from './App'
 import CitySwitch from '../../src'
 
@@ -15,6 +17,7 @@ Vue.use(CitySwitch, {
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
+  router,
   components: { App },
   template: '<App/>'
 })

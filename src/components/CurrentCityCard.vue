@@ -3,7 +3,7 @@
     <div class="current-city-card-element">
       <div v-if="!currentCity.loaded" class="current-city-card-text">定位中...</div>
       <div v-else-if="currentCity.state === 0" class="current-city-card-text">定位失败</div>
-      <div v-else class="current-city-card-text">
+      <div v-else class="current-city-card-text" @click="clickHandle">
         {{ currentCity.name }}
       </div>
     </div>
@@ -25,6 +25,11 @@ export default {
           state: 0
         }
       }
+    }
+  },
+  methods: {
+    clickHandle (city) {
+      this.$emit('selectCityEvent', Object.assign({}, city))
     }
   },
   components: {

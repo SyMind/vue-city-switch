@@ -1,8 +1,8 @@
 <template>
   <base-card :title="title">
-    <div v-for="el in elements" :key="el.name" class="common-card-element">
-      <div class="common-card-text">
-        {{ el.name }}
+    <div v-for="city in cities" :key="city.name" class="common-card-cityement">
+      <div class="common-card-text" @click="clickHandle(city)">
+        {{ city.name }}
       </div>
     </div>
   </base-card>
@@ -18,11 +18,16 @@ export default {
       type: String,
       required: true
     },
-    elements: {
+    cities: {
       type: Array,
       default: () => {
         return []
       }
+    }
+  },
+  methods: {
+    clickHandle (city) {
+      this.$emit('selectCityEvent', Object.assign({}, city))
     }
   },
   components: {
@@ -32,20 +37,25 @@ export default {
 </script>
 
 <style lang="scss">
-.common-card-element {
+.common-card-cityement {
   display: inline-block;
   box-sizing: border-box;
   width: 33.33%;
   padding: 0 11px 11px 0;
   .common-card-text {
+    box-sizing: border-box;
     height: 40px;
     width: 100%;
+    padding: 0 10px;
     border-radius: 4px;
     line-height: 40px;
     font-size: 15px;
     text-align: center;
     color: #5C5C5C;
     background-color: #fff;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
   }
 }
 </style>

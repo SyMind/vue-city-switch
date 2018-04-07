@@ -18,7 +18,6 @@ import options from '../options'
 export default {
   name: 'SearchBar',
   data () {
-    console.log(options.get('searchBarIcon'))
     return  {
       searchBarIcon: options.get('searchBarIcon')
     }

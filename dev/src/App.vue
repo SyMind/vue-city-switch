@@ -1,10 +1,14 @@
 <template>
-  <city-switch></city-switch>
+  <router-view/>
 </template>
 
 <script>
-export default {
+import Index from './pages/Index'
 
+export default {
+  components: {
+    Index
+  }
 }
 </script>
 
