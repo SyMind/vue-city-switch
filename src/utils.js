@@ -19,21 +19,34 @@ export function getPosition () {
   })
 }
 
-const URL = 'http://api.map.baidu.com/geocoder/v2/'
+const URL = 'http://restapi.amap.com/v3/geocode/regeo'
 
 export function getCity (success, fail) {
   return getPosition().then((position) => {
     return Vue.http.jsonp(URL, {
       params: {
-        ak: 'hPN9B5HjWvL1uXZnorHe94PKQ9vvFT1G',
-        location: position.latitude + ',' + position.longitude,
+        key: '08bca501f912990256215b150faa09df',
+        location: position.longitude + ',' + position.latitude,
+        extensions: 'base',
         output: 'json',
-        pois: 0
+        batch: false,
+        roadlevel: 0
       }
     })
   }).then((response) => {
-    if (status !== 0 || response.ok || response.data.result.addressComponent.city) {
-      return response.data.result.addressComponent.city
+    if (status !== 0 && response.data.status === '1') {
+      let addressComponent = response.data.regeocode.addressComponent
+      if (Array.isArray(addressComponent.city)) {
+        return {
+          name: addressComponent.province,
+          citycode: addressComponent.citycode
+        }
+      } else {
+        return {
+          name: addressComponent.city,
+          citycode: addressComponent.citycode
+        }
+      }
     }
     throw new Error('request baidu api failure.')
   })

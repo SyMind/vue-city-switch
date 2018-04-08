@@ -45,6 +45,7 @@ export default {
       searchValue: '',
       currentCity: {
         name: '大连市',
+        citycode: '',
         loaded: false,
         state: 0
       },
@@ -55,9 +56,10 @@ export default {
   },
   created () {
     this.cityGroup = this.parseCityGroup(require('./assets/json/cities.json'))
-    getCity().then((cityName) => {
+    getCity().then((city) => {
       this.currentCity.loaded = true
-      this.currentCity.name = cityName
+      this.currentCity.name = city.name
+      this.currentCity.citycode = city.citycode
       this.currentCity.state = 1
     }).catch(() => {
       this.currentCity.loaded = true
