@@ -6,7 +6,8 @@
     <div class="city-switch-body">
       <search-suggestion v-show="isSearch"
         :cityGroup="cityGroup"
-        :value="searchValue"></search-suggestion>
+        :value="searchValue"
+        @selectCityEvent="selectCityEventHandle"></search-suggestion>
       <div v-show="!isSearch" class="city-switch-scroll" @scroll="scrollHandle" ref="scroll">
         <div ref="cards">
           <current-city-card :currentCity="currentCity"

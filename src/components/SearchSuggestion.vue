@@ -3,7 +3,8 @@
     <ul class="search-suggest-wrapper">
       <li class="search-suggest-item"
         v-for="suggest of suggestArray"
-        :key="suggest.citycode">
+        :key="suggest.citycode"
+        @click="clickHandle(suggest)">
         {{ suggest.name }}
       </li>
     </ul>
@@ -23,6 +24,11 @@ export default {
     value: {
       type: String,
       required: true
+    }
+  },
+  methods: {
+    clickHandle (city) {
+      this.$emit('selectCityEvent', Object.assign({}, city))
     }
   },
   computed: {

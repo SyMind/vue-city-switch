@@ -15,7 +15,8 @@ export default {
   data () {
     let currentCity = JSON.parse(getCookie('current_city'))
     if (!currentCity) {
-      currentCity = '请选择城市'
+      currentCity = {}
+      currentCity.name = '请选择城市'
     }
     return {
       currentCity
